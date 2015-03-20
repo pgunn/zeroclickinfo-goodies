@@ -27,6 +27,4 @@ handle remainder => sub {
     return "Randagram of \"$_\": $garbledAnswer";
 };
 
-zci is_cached => 0;
-
 1;
