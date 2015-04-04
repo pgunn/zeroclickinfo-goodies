@@ -21,11 +21,44 @@ attribution github => ["GitHubAccount", "pgunn"],
 # Triggers
 triggers start => "duckfoot";
 
+##################
+# Data structures that define a world
+
+
+
+
+#######
+# Command handler, most of the work comes here
+
 sub handle_cmd
 {
 my ($cmd, $context) = @_;
 return "Command received by handle_cmd()"
 }
+
+
+#######
+# State/context serialisers/deserialisers
+# We define context as the active data structure,
+# and state as the serialised (numeric) form of the same
+
+sub load_context_from_state($)
+{
+my ($state) = @_;
+my %ret;
+# TODO
+return %ret;
+}
+
+sub save_context_to_state
+{
+my %context = @_;
+# TODO
+my $state = 0;
+return $state;
+}
+#######
+
 
 # Handle statement
 handle remainder => sub {
@@ -40,6 +73,12 @@ handle remainder => sub {
     my $textret = '';
 
     my @parts = split(/;/, $_);
+    if(defined($parts[0]) && ($parts[0] =~ /^\d+/))
+        {   # If the user's first search term is a number, we assume it's a number-encoded form of
+            # their context, and decode that.
+        my $state = shift(@parts);
+        %context = load_context_from_state($state);
+        }
     foreach my $cmd (@parts)
         {
         $textret .= "Command: $cmd";
