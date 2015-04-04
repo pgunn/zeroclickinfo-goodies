@@ -24,6 +24,18 @@ triggers start => "duckfoot";
 ##################
 # Data structures that define a world
 
+sub get_fresh_context
+{   # Returns a data structure with a fresh "world"
+    # and user state
+my %ret =
+    (
+    world       => [],
+    inventory   => [],
+    flags       => [],
+    location    => 1
+    );
+return %ret;
+}
 
 
 
@@ -42,16 +54,14 @@ return "Command received by handle_cmd()"
 # We define context as the active data structure,
 # and state as the serialised (numeric) form of the same
 
-sub load_context_from_state($)
+sub load_context_from_state
 {
-my ($state) = @_;
-my %ret;
+my ($state, $context_r) = @_;
 # TODO
-return %ret;
 }
 
 sub save_context_to_state
-{
+{   # Save mutable differences from stock world into a single number form
 my %context = @_;
 # TODO
 my $state = 0;
@@ -68,7 +78,7 @@ handle remainder => sub {
 
     return unless $_; # Guard against "no answer"
 
-    my %context;
+    my %context = get_fresh_context();
     my $htmlret = '';
     my $textret = '';
 
@@ -77,7 +87,7 @@ handle remainder => sub {
         {   # If the user's first search term is a number, we assume it's a number-encoded form of
             # their context, and decode that.
         my $state = shift(@parts);
-        %context = load_context_from_state($state);
+        load_context_from_state($state, \%context);
         }
     foreach my $cmd (@parts)
         {
